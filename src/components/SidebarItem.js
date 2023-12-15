@@ -1,13 +1,13 @@
-import Link from 'next/link'
-import React from 'react'
+import Link from "next/link";
+import React from "react";
 
-const SidebarItem = ({href, Icon, active, label}) => {
+const SidebarItem = ({ href, Icon, active, label }) => {
   return (
     <div>
-    {active ? (
-            <Link
-            href={href} 
-            className='
+      {active ? (
+        <Link
+          href={href}
+          className="
               flex 
               flex-row 
               h-auto 
@@ -21,15 +21,15 @@ const SidebarItem = ({href, Icon, active, label}) => {
               transition
               py-1
               text-white
-              '
-          >
-            <Icon size={26} />
-            <p className="truncate w-100">{label}</p>
-          </Link>
-    ):(
+              "
+        >
+          <Icon size={26} />
+          <p className="truncate w-100">{label}</p>
+        </Link>
+      ) : (
         <Link
-        href={href} 
-        className='
+          href={href}
+          className="
           flex 
           flex-row 
           h-auto 
@@ -43,15 +43,14 @@ const SidebarItem = ({href, Icon, active, label}) => {
           transition
           text-neutral-400
           py-1
-          '
-      >
-        <Icon size={26} />
-        <p className="truncate w-100">{label}</p>
-      </Link>
-    )}
-
+          "
+        >
+          <Icon size={26} />
+          <p className="truncate w-100">{label}</p>
+        </Link>
+      )}
     </div>
-  )
-}
+  );
+};
 
 export default SidebarItem;
