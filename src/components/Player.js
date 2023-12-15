@@ -2,7 +2,7 @@
 
 import React from "react";
 import shuffle from "just-shuffle";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 import { FaPlay } from "react-icons/fa";
 import { IoMdPause } from "react-icons/io";
@@ -24,13 +24,16 @@ const Player = () => {
   const [indexPlayList, setIndexPlayList] = useState(0);
   const [playList, setPlayList] = useState(playListData);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [repeatPlaylist, setRepeatPlaylist] = useState(false);
+  const [repeatAudio, setRepeatAudio] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
-  const progressBarWidth = `${(currentTime * 300) / duration}px`;
+  const progressBarWidth = `${(currentTime * 100) / duration}%`;
 
   useEffect(() => {
     // audioRef.current.pause();
     // console.log('isPlaying', audioRef.current.playing);
+    console.log(audioRef);
     setInterval(() => {
       if (!audioRef.current) {
         return;
@@ -40,14 +43,47 @@ const Player = () => {
     }, 1000);
   }, []);
 
-  const randomize = (array) => {
+  const randomize = useCallback((array) => {
     const randomizedArray = shuffle(array);
     setPlayList(randomizedArray);
     setIndexPlayList(0);
-  };
+  }, []);
+
+  const goBack = useCallback((array, indexArray) => {
+    setIsPlaying(true);
+    if (indexArray > 0) {
+      setIndexPlayList(indexArray - 1);
+    } else {
+      setIndexPlayList(array.length - 1);
+    }
+  }, []);
+
+  const goNext = useCallback((array, indexArray) => {
+    setIsPlaying(true);
+    if (indexArray < array.length - 1) {
+      setIndexPlayList(indexArray + 1);
+    } else {
+      setIndexPlayList(0);
+    }
+  }, []);
+
+  const handleEnded = useCallback(
+    (array, indexArray, repeatAudio, repeatPlaylist) => {
+      console.log("repeatAudio : ", repeatAudio);
+      console.log("repeatPlaylist : ", repeatPlaylist);
+      if (repeatPlaylist) {
+        goNext(array, indexArray);
+      } else if (repeatAudio) {
+        audioRef.current.play();
+      } else if (indexArray < array.length - 1) {
+        setIndexPlayList(indexArray + 1);
+      }
+    },
+    []
+  );
 
   return (
-    <div className="fixed flex-col bottom-0 text-center items-center w-screen p-5 bg-black">
+    <div className="fixed bottom-0 text-center items-center w-screen p-5 bg-black">
       <audio
         onChange={(e) => {
           console.log("e", e);
@@ -57,6 +93,9 @@ const Player = () => {
             audioRef.current.play();
           }
         }}
+        onEnded={() =>
+          handleEnded(playList, indexPlayList, repeatAudio, repeatPlaylist)
+        }
         ref={audioRef}
         src={playList[indexPlayList]}
       />
@@ -66,16 +105,7 @@ const Player = () => {
         </button>
 
         {/* < Button */}
-        <button
-          onClick={() => {
-            if (indexPlayList > 0) {
-              setIndexPlayList(indexPlayList - 1);
-            } else {
-              setIndexPlayList(playList.length - 1);
-              console.log(playList.length);
-            }
-          }}
-        >
+        <button onClick={() => goBack(playList, indexPlayList)}>
           <IoPlaySkipBackSharp size={20} className="text-neutral-400" />
         </button>
 
@@ -103,42 +133,76 @@ const Player = () => {
         )}
 
         {/* > Button */}
-        <button
-          onClick={() => {
-            if (indexPlayList < playList.length - 1) {
-              setIndexPlayList(indexPlayList + 1);
-            } else {
-              setIndexPlayList(0);
-            }
-          }}
-        >
+        <button onClick={() => goNext(playList, indexPlayList)}>
           <IoPlaySkipForwardSharp size={20} className="text-neutral-400" />
         </button>
+
+        {/* RepeatButton */}
+        {repeatPlaylist || repeatAudio ? (
+          repeatPlaylist ? (
+            <button
+              onClick={() => {
+                setRepeatPlaylist(false);
+                setRepeatAudio(true);
+              }}
+            >
+              <LuRepeat size={20} className="text-green-500" />
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                setRepeatAudio(false);
+              }}
+            >
+              <LuRepeat1 size={20} className="text-green-500" />
+            </button>
+          )
+        ) : (
+          <button
+            onClick={() => {
+              setRepeatPlaylist(true);
+              console.log(repeatPlaylist);
+            }}
+          >
+            <LuRepeat size={20} className="text-neutral-400" />
+          </button>
+        )}
       </div>
-      <div className="flex justify-center items-center gap-x-2 text-neutral-400 text-xs">
-        {`${Math.floor(currentTime / 60)}:${
-          currentTime - Math.floor(currentTime / 60) * 60
-        }`}
+
+      <div className="flex justify-center items-center gap-x-2 pt-2 text-neutral-400 text-xs">
+        {`${Math.floor(currentTime / 60)}:${(
+          currentTime -
+          Math.floor(currentTime / 60) * 60
+        )
+          .toString()
+          .padStart(2, "0")}`}
+
         <div
           onClick={(e) => {
             const rect = e.target.getBoundingClientRect();
             const x = e.clientX - rect.left; // x position within the element.
-            audioRef.current.currentTime = (x * duration) / 300;
+            const rectWidth = rect.width;
+            console.log("x : ", rect);
+            audioRef.current.currentTime = (x * duration) / rectWidth;
             // set audio to x position
           }}
-          className="h-1 w-[300px] bg-neutral-500 rounded-xl mt-3"
+          className="h-1 min-w-[300px] w-[35%] bg-neutral-500 rounded-xl"
         >
           <div
             style={{ width: progressBarWidth }}
             className="h-1 bg-white rounded-xl "
           ></div>
         </div>
-        {`${Math.floor(duration / 60)}:${
-          duration - Math.floor(duration / 60) * 60
-        }`}
+        {duration &&
+          `${Math.floor(duration / 60)}:${(
+            duration -
+            Math.floor(duration / 60) * 60
+          )
+            .toString()
+            .padStart(2, "0")}`}
       </div>
     </div>
   );
 };
 
-export default Player;
+export default React.memo(Player);

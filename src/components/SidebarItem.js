@@ -53,4 +53,4 @@ const SidebarItem = ({ href, Icon, active, label }) => {
   );
 };
 
-export default SidebarItem;
+export default React.memo(SidebarItem);
