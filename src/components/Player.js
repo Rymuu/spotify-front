@@ -3,10 +3,20 @@
 import React from 'react'
 import shuffle from 'just-shuffle';
 import {useEffect, useRef, useState} from 'react';
-import sound_one from '../assets/audio/Paranoia.mp3';
-import sound_two from '../assets/audio/Frieren.mp3';
-import sound_three from '../assets/audio/Everything-Goes-On.mp3';
-import sound_four from '../assets/audio/Annihilate.mp3';
+
+import { FaPlay } from "react-icons/fa";
+import { IoMdPause } from "react-icons/io";
+import { IoPlaySkipBackSharp } from "react-icons/io5";
+import { IoPlaySkipForwardSharp } from "react-icons/io5";
+import { LiaRandomSolid } from "react-icons/lia";
+import { LuRepeat } from "react-icons/lu";
+import { LuRepeat1 } from "react-icons/lu";
+
+import sound_one from '@/../static/audio/Paranoia.mp3';
+import sound_two from '@/../static/audio/Frieren.mp3';
+import sound_three from '@/../static/audio/Everything-Goes-On.mp3';
+import sound_four from '@/../static/audio/Annihilate.mp3';
+
 const playListData = [sound_one, sound_two, sound_three, sound_four];
 
 const Player = () => {
@@ -17,6 +27,7 @@ const Player = () => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
+    const progressBarWidth = `${(currentTime * 300) / duration}px`;
 
     useEffect(() => {
         // audioRef.current.pause();
@@ -37,7 +48,7 @@ const Player = () => {
       };
 
   return (
-    <>
+    <div className='fixed flex-col bottom-0 text-center items-center w-screen p-5 bg-black'>
       <audio
         onChange={e => {
           console.log('e', e);
@@ -50,20 +61,46 @@ const Player = () => {
         ref={audioRef}
         src={playList[indexPlayList]}
       />
-      <button
-        onClick={() => {
-          audioRef.current.play();
-          setIsPlaying(true);
+<div className='flex gap-x-4 justify-center'>
+    <button onClick={() => randomize(playList)}>
+        <LiaRandomSolid size={20} className='text-neutral-400'/>
+    </button>
+
+    {/* < Button */}
+        <button onClick={() => {
+            if (indexPlayList > 0) {
+                setIndexPlayList(indexPlayList - 1);
+            } else {
+                setIndexPlayList(playList.length - 1);
+                console.log(playList.length);
+            }
         }}>
-        Play
-      </button>
-      <button
-        onClick={() => {
-          audioRef.current.pause();
-          setIsPlaying(false);
-        }}>
-        Pause
-      </button>
+            <IoPlaySkipBackSharp size={20} className='text-neutral-400'/>
+        </button>
+
+    {/* Play Button */}
+    {isPlaying ? (
+    <button
+    className='p-[7.5px] bg-white rounded-full'
+    onClick={() => {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }}>
+    <IoMdPause size={20} className='text-black '/>
+  </button>
+    ) : (
+
+          <button
+          className='p-[10px] bg-white rounded-full'
+            onClick={() => {
+              audioRef.current.play();
+              setIsPlaying(true);
+            }}>
+            <FaPlay size={15} className='text-black '/>
+          </button>
+    )}
+
+    {/* > Button */}
       <button
         onClick={() => {
           if (indexPlayList < playList.length - 1) {
@@ -72,32 +109,25 @@ const Player = () => {
             setIndexPlayList(0);
           }
         }}>
-        Next
+        <IoPlaySkipForwardSharp size={20} className='text-neutral-400'/>
       </button>
-      <button onClick={() => randomize(playList)}>Randomize</button>
-      <div
-        onClick={e => {
-          const rect = e.target.getBoundingClientRect();
-          const x = e.clientX - rect.left; //x position within the element.
-          console.log('x', x);
-          audioRef.current.currentTime = (x * duration) / 300;
-          // set audio to x position
-        }}
-        style={{
-          height: 5,
-          width: 300,
-          background: '#00000042',
-          borderRadius: 5,
-        }}>
-        <div
-          style={{
-            height: 5,
-            width: (currentTime * 300) / duration,
-            background: 'red',
-            borderRadius: 5,
-          }}></div>
       </div>
-    </>
+      {`${Math.floor(currentTime / 60)}:${currentTime - (Math.floor(currentTime / 60)) * 60}`}
+      <div
+      onClick={(e) => {
+        const rect = e.target.getBoundingClientRect();
+        const x = e.clientX - rect.left; // x position within the element.
+        audioRef.current.currentTime = (x * duration) / 300;
+        // set audio to x position
+      }}
+      className="h-1 w-[300px] bg-neutral-500 rounded-xl mr-auto ml-auto mt-3"
+    >
+        <div style={{ width: progressBarWidth }}
+      className="h-1 bg-white rounded-xl ">
+        </div>
+    </div>
+{`${Math.floor(duration / 60)}:${duration - (Math.floor(duration / 60)) * 60}`}
+    </div>
   )
 }
 
