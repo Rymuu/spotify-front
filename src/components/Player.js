@@ -3,6 +3,7 @@
 import React from "react";
 import shuffle from "just-shuffle";
 import { useEffect, useRef, useState, useCallback } from "react";
+import CustomSlider from "./CustomSlider";
 
 import { FaPlay } from "react-icons/fa";
 import { IoMdPause } from "react-icons/io";
@@ -11,6 +12,9 @@ import { IoPlaySkipForwardSharp } from "react-icons/io5";
 import { LiaRandomSolid } from "react-icons/lia";
 import { LuRepeat } from "react-icons/lu";
 import { LuRepeat1 } from "react-icons/lu";
+import { HiOutlineVolumeUp } from "react-icons/hi";
+import { HiOutlineVolumeOff } from "react-icons/hi";
+import { AiOutlineExpandAlt } from "react-icons/ai";
 
 import sound_one from "@/../static/audio/Paranoia.mp3";
 import sound_two from "@/../static/audio/Frieren.mp3";
@@ -28,12 +32,11 @@ const Player = () => {
   const [repeatAudio, setRepeatAudio] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
-  const progressBarWidth = `${(currentTime * 100) / duration}%`;
+  const [isDragging, setIsDragging] = useState(false);
+  const [volume, setVolume] = useState(1);
+  const [muted, setMuted] = useState(false);
 
   useEffect(() => {
-    // audioRef.current.pause();
-    // console.log('isPlaying', audioRef.current.playing);
-    console.log(audioRef);
     setInterval(() => {
       if (!audioRef.current) {
         return;
@@ -42,6 +45,14 @@ const Player = () => {
       setCurrentTime(Math.round(audioRef.current.currentTime));
     }, 1000);
   }, []);
+
+  const handleVolumeChange = (e) => {
+    const volumeValue = e.target.value;
+    if (audioRef.current) {
+      audioRef.current.volume = volumeValue;
+      setVolume(volumeValue);
+    }
+  };
 
   const randomize = useCallback((array) => {
     const randomizedArray = shuffle(array);
@@ -69,8 +80,6 @@ const Player = () => {
 
   const handleEnded = useCallback(
     (array, indexArray, repeatAudio, repeatPlaylist) => {
-      console.log("repeatAudio : ", repeatAudio);
-      console.log("repeatPlaylist : ", repeatPlaylist);
       if (repeatPlaylist) {
         goNext(array, indexArray);
       } else if (repeatAudio) {
@@ -83,13 +92,13 @@ const Player = () => {
   );
 
   return (
-    <div className="fixed bottom-0 text-center items-center w-screen p-5 bg-black">
+    <div className="fixed flex justify-between bottom-0 text-center items-center w-screen p-5 bg-black">
       <audio
         onChange={(e) => {
           console.log("e", e);
         }}
         onCanPlay={() => {
-          if (isPlaying) {
+          if (isPlaying && !isDragging) {
             audioRef.current.play();
           }
         }}
@@ -99,107 +108,159 @@ const Player = () => {
         ref={audioRef}
         src={playList[indexPlayList]}
       />
-      <div className="flex gap-x-4 justify-center">
-        <button onClick={() => randomize(playList)}>
-          <LiaRandomSolid size={20} className="text-neutral-400" />
-        </button>
-
-        {/* < Button */}
-        <button onClick={() => goBack(playList, indexPlayList)}>
-          <IoPlaySkipBackSharp size={20} className="text-neutral-400" />
-        </button>
-
-        {/* Play Button */}
-        {isPlaying ? (
-          <button
-            className="p-[7.5px] bg-white rounded-full"
-            onClick={() => {
-              audioRef.current.pause();
-              setIsPlaying(false);
-            }}
-          >
-            <IoMdPause size={20} className="text-black " />
+      <div className="hidden md:block w-[30%]">
+        <p>Hey</p>
+      </div>
+      <div className="w-[40%]">
+        <div className="flex gap-x-4 justify-center">
+          <button onClick={() => randomize(playList)}>
+            <LiaRandomSolid
+              size={20}
+              className="text-neutral-400 hover:text-white"
+            />
           </button>
-        ) : (
-          <button
-            className="p-[10px] bg-white rounded-full"
-            onClick={() => {
-              audioRef.current.play();
-              setIsPlaying(true);
-            }}
-          >
-            <FaPlay size={15} className="text-black " />
+
+          {/* < Button */}
+          <button onClick={() => goBack(playList, indexPlayList)}>
+            <IoPlaySkipBackSharp
+              size={20}
+              className="text-neutral-400 hover:text-white"
+            />
           </button>
-        )}
 
-        {/* > Button */}
-        <button onClick={() => goNext(playList, indexPlayList)}>
-          <IoPlaySkipForwardSharp size={20} className="text-neutral-400" />
-        </button>
-
-        {/* RepeatButton */}
-        {repeatPlaylist || repeatAudio ? (
-          repeatPlaylist ? (
+          {/* Play Button */}
+          {isPlaying ? (
             <button
+              className="p-[7.5px] bg-white rounded-full"
               onClick={() => {
-                setRepeatPlaylist(false);
-                setRepeatAudio(true);
+                audioRef.current.pause();
+                setIsPlaying(false);
               }}
             >
-              <LuRepeat size={20} className="text-green-500" />
+              <IoMdPause size={20} className="text-black " />
             </button>
           ) : (
             <button
+              className="p-[10px] bg-white rounded-full"
               onClick={() => {
-                setRepeatAudio(false);
+                audioRef.current.play();
+                setIsPlaying(true);
               }}
             >
-              <LuRepeat1 size={20} className="text-green-500" />
+              <FaPlay size={15} className="text-black " />
             </button>
-          )
-        ) : (
-          <button
-            onClick={() => {
-              setRepeatPlaylist(true);
-              console.log(repeatPlaylist);
-            }}
-          >
-            <LuRepeat size={20} className="text-neutral-400" />
+          )}
+
+          {/* > Button */}
+          <button onClick={() => goNext(playList, indexPlayList)}>
+            <IoPlaySkipForwardSharp
+              size={20}
+              className="text-neutral-400 hover:text-white"
+            />
           </button>
-        )}
-      </div>
 
-      <div className="flex justify-center items-center gap-x-2 pt-2 text-neutral-400 text-xs">
-        {`${Math.floor(currentTime / 60)}:${(
-          currentTime -
-          Math.floor(currentTime / 60) * 60
-        )
-          .toString()
-          .padStart(2, "0")}`}
-
-        <div
-          onClick={(e) => {
-            const rect = e.target.getBoundingClientRect();
-            const x = e.clientX - rect.left; // x position within the element.
-            const rectWidth = rect.width;
-            console.log("x : ", rect);
-            audioRef.current.currentTime = (x * duration) / rectWidth;
-            // set audio to x position
-          }}
-          className="h-1 min-w-[300px] w-[35%] bg-neutral-500 rounded-xl"
-        >
-          <div
-            style={{ width: progressBarWidth }}
-            className="h-1 bg-white rounded-xl "
-          ></div>
+          {/* RepeatButton */}
+          {repeatPlaylist || repeatAudio ? (
+            repeatPlaylist ? (
+              <button
+                onClick={() => {
+                  setRepeatPlaylist(false);
+                  setRepeatAudio(true);
+                }}
+              >
+                <LuRepeat size={20} className="text-green-500" />
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setRepeatAudio(false);
+                }}
+              >
+                <LuRepeat1 size={20} className="text-green-500" />
+              </button>
+            )
+          ) : (
+            <button
+              onClick={() => {
+                setRepeatPlaylist(true);
+              }}
+            >
+              <LuRepeat
+                size={20}
+                className="text-neutral-400 hover:text-white"
+              />
+            </button>
+          )}
         </div>
-        {duration &&
-          `${Math.floor(duration / 60)}:${(
-            duration -
-            Math.floor(duration / 60) * 60
-          )
-            .toString()
-            .padStart(2, "0")}`}
+
+        <div className="flex justify-center  items-center pt-2 gap-x-3 text-neutral-400 text-xs">
+          <p className="text-left w-[40px]">
+            {`${Math.floor(currentTime / 60)}:${(
+              currentTime -
+              Math.floor(currentTime / 60) * 60
+            )
+              .toString()
+              .padStart(2, "0")}`}
+          </p>
+          <CustomSlider
+            disabled={audioRef.current ? false : true}
+            step={0.1}
+            value={currentTime}
+            max={duration}
+            min={0}
+            onChange={(e) => {
+              setIsDragging(true);
+              audioRef.current.pause();
+              const progressValue = e.target.value;
+              if (audioRef.current) {
+                audioRef.current.currentTime = progressValue;
+                setCurrentTime(Math.round(audioRef.current.currentTime));
+              }
+            }}
+            onChangeCommitted={() => {
+              setIsDragging(false);
+              if (isPlaying) {
+                audioRef.current.play();
+              }
+            }}
+          />
+          <p className="text-right w-[40px]">
+            {duration &&
+              `${Math.floor(duration / 60)}:${(
+                duration -
+                Math.floor(duration / 60) * 60
+              )
+                .toString()
+                .padStart(2, "0")}`}
+          </p>
+        </div>
+      </div>
+      <div className="flex w-[30%] justify-end items-center gap-x-3">
+        {volume === 0 || muted ? (
+          <HiOutlineVolumeOff
+            onClick={() => setMuted(false)}
+            size={20}
+            className="text-neutral-400"
+          />
+        ) : (
+          <HiOutlineVolumeUp
+            onClick={() => setMuted(true)}
+            size={20}
+            className="text-neutral-400"
+          />
+        )}
+        <CustomSlider
+          size="small"
+          min={0}
+          max={1}
+          value={volume}
+          width={100}
+          onChange={handleVolumeChange}
+        />
+        <AiOutlineExpandAlt
+          size={20}
+          className="text-neutral-400 hover:text-white"
+        />
       </div>
     </div>
   );
