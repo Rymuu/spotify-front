@@ -11,6 +11,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import { BiSolidPlaylist } from "react-icons/bi";
 
 import SidebarItem from "./SidebarItem";
+import HorizontalCard from "./HorizontalCard";
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -68,6 +69,10 @@ const Sidebar = () => {
           <BiSolidPlaylist size={26} />
           <p className="truncate w-100">Library</p>
         </div>
+        <HorizontalCard
+          BoldText={"Liked Titles"}
+          GreyText={"21 liked titles"}
+        />
       </div>
     </div>
   );
