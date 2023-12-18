@@ -30,7 +30,7 @@ const VolumeSlider = ({ audioRef }) => {
     [audioRef]
   );
   return (
-    <div className="flex w-[30%] justify-end items-center gap-x-4">
+    <div className="flex justify-end items-center gap-x-4">
       {volume === 0 ? (
         <HiOutlineVolumeOff size={20} className="text-neutral-400" />
       ) : (

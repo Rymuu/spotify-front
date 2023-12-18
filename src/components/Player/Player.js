@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useContext } from "react";
+import { PlaylistContext } from "@/app/context/PlaylistContext";
 
 import CustomSlider from "../CustomSlider";
 import PlayButton from "./PlayerButtons/PlayButton";
@@ -12,25 +13,38 @@ import RepeatButton from "./PlayerButtons/RepeatButton";
 
 import { AiOutlineExpandAlt } from "react-icons/ai";
 
-import sound_one from "@/../static/audio/Paranoia.mp3";
-import sound_two from "@/../static/audio/Frieren.mp3";
-import sound_three from "@/../static/audio/Everything-Goes-On.mp3";
-import sound_four from "@/../static/audio/Annihilate.mp3";
 import VolumeSlider from "./VolumeSlider";
 import HorizontalCard from "../HorizontalCard";
-
-const playListData = [sound_one, sound_two, sound_three, sound_four];
 
 const Player = () => {
   const audioRef = useRef(null);
   const [indexPlayList, setIndexPlayList] = useState(0);
-  const [playList, setPlayList] = useState(playListData);
+  const [playList, setPlayList] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [repeatPlaylist, setRepeatPlaylist] = useState(false);
   const [repeatAudio, setRepeatAudio] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [isThereAPlaylist, setIsThereAPlaylist] = useState(false);
+  const [artist, setArtist] = useState(null);
+  const [cover, setCover] = useState(null);
+  const { currentPlaylist, currentArtist, albumCover, playlistIndex } =
+    useContext(PlaylistContext);
+
+  // Utilisez currentPlaylist dans votre logique
+  useEffect(() => {
+    if (currentPlaylist.length > 0) {
+      setPlayList(currentPlaylist);
+      setArtist(currentArtist);
+      setCover(albumCover);
+      setIsThereAPlaylist(true);
+      setIndexPlayList(playlistIndex);
+      setIsPlaying(true);
+      console.log("tout reçu : ", currentPlaylist);
+    }
+    // Autres logiques avec currentPlaylist
+  }, [albumCover, currentArtist, currentPlaylist, playlistIndex]);
 
   useEffect(() => {
     setInterval(() => {
@@ -40,7 +54,7 @@ const Player = () => {
       setDuration(Math.round(audioRef.current.duration));
       setCurrentTime(Math.round(audioRef.current.currentTime));
     }, 1000);
-  }, []);
+  }, [playList]);
 
   const goNext = useCallback(
     (array, indexArray) => {
@@ -69,25 +83,34 @@ const Player = () => {
 
   return (
     <div className="fixed flex justify-between bottom-0 text-center items-center w-screen p-5 bg-black">
-      <audio
-        onChange={(e) => {
-          console.log("e", e);
-        }}
-        onCanPlay={() => {
-          if (isPlaying && !isDragging) {
-            audioRef.current.play();
+      {isThereAPlaylist && (
+        <audio
+          onChange={(e) => {
+            console.log("e", e);
+          }}
+          onCanPlay={() => {
+            if (isPlaying && !isDragging) {
+              audioRef.current.play();
+            }
+          }}
+          onEnded={() =>
+            handleEnded(playList, indexPlayList, repeatAudio, repeatPlaylist)
           }
-        }}
-        onEnded={() =>
-          handleEnded(playList, indexPlayList, repeatAudio, repeatPlaylist)
-        }
-        ref={audioRef}
-        src={playList[indexPlayList]}
-      />
-      <HorizontalCard
-        BoldText={"Song Title"}
-        GreyText={"Artist1, Artist2, Artist3..."}
-      />
+          ref={audioRef}
+          src={playList[indexPlayList] && playList[indexPlayList].file}
+        />
+      )}
+      {playList.length === 0 && !cover ? (
+        <p className="w-[30%]"></p>
+      ) : (
+        <HorizontalCard
+          label={playList[indexPlayList] && playList[indexPlayList].title}
+          GreyText={artist}
+          width={"30%"}
+          coverSrc={cover}
+        />
+      )}
+
       <div className="w-[40%]">
         <div className="flex gap-x-4 justify-center">
           {/* Randomize Button */}
@@ -108,6 +131,7 @@ const Player = () => {
             audioRef={audioRef}
             isPlaying={isPlaying}
             setIsPlaying={setIsPlaying}
+            isThereAPlaylist={isThereAPlaylist}
           />
           {/* Skip Forward Button */}
           <SkipForwardButton
@@ -136,10 +160,10 @@ const Player = () => {
               .padStart(2, "0")}`}
           </p>
           <CustomSlider
-            disabled={audioRef.current ? false : true}
+            disabled={playList.length > 0 ? false : true}
             step={0.1}
-            value={currentTime}
-            max={duration}
+            value={playList.length > 0 && currentTime ? currentTime : 0}
+            max={playList.length > 0 && duration ? duration : 0}
             min={0}
             onChange={(e) => {
               setIsDragging(true);
@@ -158,13 +182,14 @@ const Player = () => {
             }}
           />
           <p className="text-right w-[40px]">
-            {duration &&
-              `${Math.floor(duration / 60)}:${(
-                duration -
-                Math.floor(duration / 60) * 60
-              )
-                .toString()
-                .padStart(2, "0")}`}
+            {duration
+              ? `${Math.floor(duration / 60)}:${(
+                  duration -
+                  Math.floor(duration / 60) * 60
+                )
+                  .toString()
+                  .padStart(2, "0")}`
+              : "0:00"}
           </p>
         </div>
       </div>

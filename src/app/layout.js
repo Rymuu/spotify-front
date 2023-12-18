@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import Sidebar from "../components/Sidebar";
 import "./globals.css";
 import Player from "@/components/Player/Player";
+import { PlaylistContextProvider } from "./context/PlaylistContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,18 +13,20 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <main>
-          <div className="flex p-2 gap-x-2 fixed top-[2px] w-screen">
-            <Sidebar />
-            <div className="flex flex-col h-[86vh] gap-y-3 px-5 py-4 bg-gradient-to-b from-indigo-950 from-0% to-neutral-900 to-50% rounded-lg w-full">
-              {children}
+    <PlaylistContextProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <main>
+            <div className="flex p-2 gap-x-2 fixed top-[2px] w-screen">
+              <Sidebar />
+              <div className="flex flex-col h-[86vh] rounded-lg gap-y-3 bg-neutral-900 to-50% w-full">
+                {children}
+              </div>
             </div>
-          </div>
-          <Player />
-        </main>
-      </body>
-    </html>
+            <Player />
+          </main>
+        </body>
+      </html>
+    </PlaylistContextProvider>
   );
 }

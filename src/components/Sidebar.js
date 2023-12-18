@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { getArtists } from "@/app/api";
 
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
@@ -14,6 +14,18 @@ import SidebarItem from "./SidebarItem";
 import HorizontalCard from "./HorizontalCard";
 
 const Sidebar = () => {
+  const [artists, setArtists] = useState([]);
+
+  useEffect(() => {
+    getArtists()
+      .then((data) => {
+        setArtists(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching artists:", error);
+      });
+  }, []);
+
   const pathname = usePathname();
 
   const routes = useMemo(
@@ -67,11 +79,12 @@ const Sidebar = () => {
             "
         >
           <BiSolidPlaylist size={26} />
-          <p className="truncate w-100">Library</p>
+          <p className="truncate w-100">Your Library</p>
         </div>
         <HorizontalCard
-          BoldText={"Liked Titles"}
-          GreyText={"21 liked titles"}
+          label={"Liked Songs"}
+          GreyText={"Playlist · 21 songs"}
+          width={"100%"}
         />
       </div>
     </div>
