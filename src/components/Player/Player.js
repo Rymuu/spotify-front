@@ -34,22 +34,29 @@ const Player = () => {
   const [audioData, setAudioData] = useState([]);
 
   useEffect(() => {
-    const fetchDataForAllAudioIds = () => {
-      const newData = [];
-      for (const audioId of currentPlaylist) {
-        getAudio(audioId)
-          .then((data) => {
-            newData.push(data);
-            setAudioData(newData);
+    const fetchDataForAllAudioIds = async () => {
+      try {
+        // Use Promise.all to wait for all requests to complete
+        const audioDataArray = await Promise.all(
+          currentPlaylist.map(async (audioId) => {
+            try {
+              const data = await getAudio(audioId);
+              return data;
+            } catch (error) {
+              console.error(`Error fetching audio with ID ${audioId}:`, error);
+              return null;
+            }
           })
-          .catch((error) => {
-            console.error("Error fetching album:", error);
-          });
+        );
+
+        // Filter out null values (failed requests) and set the audio data
+        setAudioData(audioDataArray.filter((data) => data !== null));
+      } catch (error) {
+        console.error("Error fetching audio data for all IDs:", error);
       }
     };
-    // Fonction pour effectuer les appels API pour chaque ID audio
 
-    // Appelez la fonction pour récupérer les données au montage du composant
+    // Call the function to fetch data when the component mounts or when currentPlaylist changes
     fetchDataForAllAudioIds();
   }, [currentPlaylist]);
 
@@ -60,9 +67,10 @@ const Player = () => {
       setPlayList(audioData);
       setIsThereAPlaylist(true);
       setIndexPlayList(playlistIndex);
+      console.log("new playlist", playList);
       setIsPlaying(true);
     }
-    // Autres logiques avec currentPlaylist
+    // Autres logiques avec currentPlaylistindexPlayList
   }, [audioData, currentPlaylist, playlistIndex]);
 
   useEffect(() => {
@@ -104,9 +112,6 @@ const Player = () => {
     <div className="fixed flex justify-between bottom-0 text-center items-center w-screen p-5 bg-black">
       {isThereAPlaylist && (
         <audio
-          onChange={(e) => {
-            console.log("e", e);
-          }}
           onCanPlay={() => {
             if (isPlaying && !isDragging) {
               audioRef.current.play();

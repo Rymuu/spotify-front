@@ -19,6 +19,7 @@ export default function Album() {
     // Appeler setAlbumId avec le nouvel ID d'album
     setCurrentPlaylist(audioIds);
     setPlaylistIndex(index);
+    console.log(index);
   };
 
   useEffect(() => {
