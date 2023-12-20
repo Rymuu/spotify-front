@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
-import Card from "@/components/Card";
-import HorizontalCard from "@/components/HorizontalCard";
+import Card from "@/components/Cards/Card";
+import HorizontalCard from "@/components/Cards/HorizontalCard";
 import Section from "@/components/Section";
 
 import { getLast10Artists, getLast10Albums } from "./api";

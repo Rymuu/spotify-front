@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, useCallback, useContext } from "react";
 import { PlaylistContext } from "@/app/context/PlaylistContext";
 import { getAudio } from "@/app/api";
 
-import CustomSlider from "../CustomSlider";
+import CustomSlider from "./CustomSlider";
 import PlayButton from "./PlayerButtons/PlayButton";
 import SkipBackButton from "./PlayerButtons/SkipBackButton";
 import SkipForwardButton from "./PlayerButtons/SkipForwardButton";
@@ -15,7 +15,7 @@ import RepeatButton from "./PlayerButtons/RepeatButton";
 import { AiOutlineExpandAlt } from "react-icons/ai";
 
 import VolumeSlider from "./VolumeSlider";
-import HorizontalCard from "../HorizontalCard";
+import HorizontalCard from "../Cards/HorizontalCard";
 
 const Player = () => {
   const audioRef = useRef(null);
@@ -125,12 +125,11 @@ const Player = () => {
         />
       )}
       {playList.length === 0 && !playList[indexPlayList]?.album.cover ? (
-        <p className="w-[30%]"></p>
+        <></>
       ) : (
         <HorizontalCard
           label={playList[indexPlayList]?.title}
           GreyText={playList[indexPlayList]?.artist.name}
-          width={"30%"}
           coverSrc={playList[indexPlayList]?.album.cover}
         />
       )}
@@ -174,7 +173,7 @@ const Player = () => {
           />
         </div>
 
-        <div className="flex justify-center  items-center pt-2 gap-x-4 text-neutral-400 text-xs">
+        <div className="flex items-center pt-2 gap-x-4 text-neutral-400 text-xs">
           <p className="text-left w-[40px]">
             {`${Math.floor(currentTime / 60)}:${(
               currentTime -
@@ -217,7 +216,7 @@ const Player = () => {
           </p>
         </div>
       </div>
-      <div className="flex w-[30%] justify-end items-center gap-x-4">
+      <div className="flex items-center gap-x-4">
         {/* Slider Audio */}
         <VolumeSlider audioRef={audioRef} />
         <AiOutlineExpandAlt

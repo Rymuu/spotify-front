@@ -6,7 +6,7 @@ import { useContext, useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { FaHashtag } from "react-icons/fa";
 import { getAlbum, getArtist } from "@/app/api";
-import SongCard from "@/components/SongCard";
+import SongCard from "@/components/Cards/SongCard";
 
 export default function Album() {
   const { id } = useParams();

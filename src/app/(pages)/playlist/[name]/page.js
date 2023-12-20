@@ -10,7 +10,7 @@ import {
   getTopListenedAudios,
   getLast10Audios,
 } from "@/app/api";
-import SongCard from "@/components/SongCard";
+import SongCard from "@/components/Cards/SongCard";
 
 export default function Playlist() {
   const { name } = useParams();

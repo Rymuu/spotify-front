@@ -4,7 +4,7 @@ import React from "react";
 import { useState, useCallback } from "react";
 import { HiOutlineVolumeUp } from "react-icons/hi";
 import { HiOutlineVolumeOff } from "react-icons/hi";
-import CustomSlider from "../CustomSlider";
+import CustomSlider from "./CustomSlider";
 
 const VolumeSlider = ({ audioRef }) => {
   const [volume, setVolume] = useState(1);
