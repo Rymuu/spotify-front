@@ -3,6 +3,7 @@
 import React from "react";
 import { useEffect, useRef, useState, useCallback, useContext } from "react";
 import { PlaylistContext } from "@/app/context/PlaylistContext";
+import { playedAudio } from "@/app/api";
 
 import CustomSlider from "../CustomSlider";
 import PlayButton from "./PlayerButtons/PlayButton";
@@ -41,7 +42,6 @@ const Player = () => {
       setIsThereAPlaylist(true);
       setIndexPlayList(playlistIndex);
       setIsPlaying(true);
-      console.log("tout reçu : ", currentPlaylist);
     }
     // Autres logiques avec currentPlaylist
   }, [albumCover, currentArtist, currentPlaylist, playlistIndex]);

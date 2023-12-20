@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
           <main>
             <div className="flex p-2 gap-x-2 fixed top-[2px] w-screen">
               <Sidebar />
-              <div className="flex flex-col h-[86vh] rounded-lg gap-y-3 bg-neutral-900 to-50% w-full">
+              <div className="overflow-y-auto flex flex-col h-[86vh] rounded-lg gap-y-3 bg-neutral-900 to-50% w-full">
                 {children}
               </div>
             </div>

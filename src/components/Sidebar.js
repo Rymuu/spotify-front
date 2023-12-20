@@ -82,6 +82,7 @@ const Sidebar = () => {
           <p className="truncate w-100">Your Library</p>
         </div>
         <HorizontalCard
+          coverSrc={"https://d3ozihag9834pq.cloudfront.net/image/music.png"}
           label={"Liked Songs"}
           GreyText={"Playlist · 21 songs"}
           width={"100%"}

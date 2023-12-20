@@ -1,44 +1,100 @@
+"use client";
+import { useRouter } from "next/navigation";
 import Card from "@/components/Card";
 import HorizontalCard from "@/components/HorizontalCard";
 import Section from "@/components/Section";
-import Image from "next/image";
+
+import { getLast10Artists, getLast10Albums } from "./api";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [lastAlbums, setLastAlbums] = useState([]);
+  const [lastArtists, setLastArtists] = useState([]);
+
+  const router = useRouter();
+  useEffect(() => {
+    const fetchAlbums = () => {
+      getLast10Albums()
+        .then((data) => {
+          setLastAlbums(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching albums :", error);
+        });
+    };
+    const fetchArtists = () => {
+      getLast10Artists()
+        .then((data) => {
+          setLastArtists(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching albums :", error);
+        });
+    };
+    fetchArtists();
+    fetchAlbums();
+  }, []);
+
   return (
-    <div className="px-5 py-5 bg-gradient-to-b from-indigo-950 from-0% to-neutral-900 to-50% rounded-lg">
+    <div className="px-5 py-5 bg-gradient-to-b from-pink-950 from-0% to-neutral-900 to-50% rounded-lg">
       <Section label={"Good Morning"} textSize="3xl">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 w-full">
           <HorizontalCard
+            coverSrc={"https://d3ozihag9834pq.cloudfront.net/image/music.png"}
             label={"Liked Songs"}
             bgColor="white"
             borderRadius="l-lg"
             width="100%"
+            onClick={() => router.push("/playlist/likedSongs")}
           />
           <HorizontalCard
-            label={"Most Popular Songs"}
+            coverSrc={"https://d3ozihag9834pq.cloudfront.net/image/music.png"}
+            label={"Most listened to"}
             bgColor="white"
             borderRadius="l-lg"
             width="100%"
+            onClick={() => router.push("/playlist/topListenedAudios")}
           />
           <HorizontalCard
-            label={"Dernières sorties"}
+            coverSrc={"https://d3ozihag9834pq.cloudfront.net/image/music.png"}
+            label={"Last listened to"}
             bgColor="white"
             borderRadius="l-lg"
             width="100%"
+            onClick={() => router.push("/playlist/lastListenedAudios")}
           />
           <HorizontalCard
-            label={"Disney"}
+            coverSrc={"https://d3ozihag9834pq.cloudfront.net/image/music.png"}
+            label={"New Songs"}
             bgColor="white"
             borderRadius="l-lg"
             width="100%"
+            onClick={() => router.push("/playlist/newSongs")}
           />
         </div>
       </Section>
-      <Section label={"Derniers albums"}>
-        <Card label={"Album"} greyText={"Artist"} />
+      <Section label={"New albums"}>
+        {lastAlbums.map((item) => (
+          <Card
+            key={item.id}
+            label={item.title}
+            greyText={"Album"}
+            coverSrc={item.cover}
+            onClick={() => router.push(`/album/${item.id}`)}
+          />
+        ))}
       </Section>
-      <Section label={"Artistes populaires"}>Bloup</Section>
-      <Section label={"Albums Pop"}>Bloup</Section>
+      <Section label={"New artists"}>
+        {lastArtists.map((item) => (
+          <Card
+            key={item.id}
+            label={item.name}
+            greyText={"Artist"}
+            coverSrc={item.albums[0].cover}
+            onClick={() => router.push(`/artist/${item.id}`)}
+          />
+        ))}
+      </Section>
     </div>
   );
 }

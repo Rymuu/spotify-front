@@ -54,3 +54,41 @@ export const getAudios = async () => {
   const data = await response.json();
   return data;
 };
+
+export const getTopListenedAudios = async () => {
+  const response = await fetch("http://localhost:3000/api/topListenedAudios");
+  const data = await response.json();
+  return data;
+};
+
+export const getLastListenedAudios = async () => {
+  const response = await fetch("http://localhost:3000/api/lastListenedAudios");
+  const data = await response.json();
+  return data;
+};
+
+export const getLast10Audios = async () => {
+  const response = await fetch("http://localhost:3000/api/last10Audios");
+  const data = await response.json();
+  return data;
+};
+
+export const getLast10Albums = async () => {
+  const response = await fetch("http://localhost:3000/api/last10Albums");
+  const data = await response.json();
+  return data;
+};
+
+export const getLast10Artists = async () => {
+  const response = await fetch("http://localhost:3000/api/last10Artists");
+  const data = await response.json();
+  return data;
+};
+
+export const playedAudio = async () => {
+  const response = await fetch("http://localhost:3000/api/playedAudio", {
+    method: "POST",
+  });
+  const data = await response.json();
+  return data;
+};

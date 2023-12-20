@@ -8,7 +8,7 @@ import { FaHashtag } from "react-icons/fa";
 import { getAlbum, getArtist } from "@/app/api";
 import SongCard from "@/components/SongCard";
 
-export default function Album() {
+export default function Playlist() {
   const { id } = useParams();
   const [album, setAlbum] = useState();
   const [artist, setArtist] = useState();
