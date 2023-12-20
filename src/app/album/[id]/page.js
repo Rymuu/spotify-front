@@ -12,11 +12,12 @@ export default function Album() {
   const { id } = useParams();
   const [album, setAlbum] = useState();
   const [artist, setArtist] = useState();
-  const { setAlbumId, setPlaylistIndex } = useContext(PlaylistContext);
+  const { setCurrentPlaylist, setPlaylistIndex } = useContext(PlaylistContext);
+  const [audioIds, setAudioIds] = useState();
 
-  const handleAlbumSelect = (id, index) => {
+  const handleAlbumSelect = (index) => {
     // Appeler setAlbumId avec le nouvel ID d'album
-    setAlbumId(id);
+    setCurrentPlaylist(audioIds);
     setPlaylistIndex(index);
   };
 
@@ -25,6 +26,14 @@ export default function Album() {
       getAlbum(id)
         .then((data) => {
           setAlbum(data);
+
+          // Extract audio IDs from the array of audio objects
+          const audioIds = data.audios.map((audio) => audio.id);
+
+          // Set the array of audio IDs in state
+          setAudioIds(audioIds);
+          console.log("audiosIds : ", audioIds);
+          // Fetch artist information
           getArtist(data.artistId)
             .then((data) => {
               setArtist(data.name);
@@ -83,7 +92,7 @@ export default function Album() {
                   song={item}
                   artist={artist}
                   index={index + 1}
-                  onDoubleClick={() => handleAlbumSelect(item.albumId, index)}
+                  onDoubleClick={() => handleAlbumSelect(index)}
                 />
               ))}
           </div>

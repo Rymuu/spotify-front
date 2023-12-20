@@ -9,10 +9,10 @@ import { getAlbum, getArtist } from "@/app/api";
 import SongCard from "@/components/SongCard";
 
 export default function Playlist() {
-  const { id } = useParams();
+  const { name } = useParams();
   const [album, setAlbum] = useState();
   const [artist, setArtist] = useState();
-  const { setAlbumId, setPlaylistIndex } = useContext(PlaylistContext);
+  const { setPlaylist, setMusicId } = useContext(PlaylistContext);
 
   const handleAlbumSelect = (id, index) => {
     // Appeler setAlbumId avec le nouvel ID d'album

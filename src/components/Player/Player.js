@@ -3,7 +3,7 @@
 import React from "react";
 import { useEffect, useRef, useState, useCallback, useContext } from "react";
 import { PlaylistContext } from "@/app/context/PlaylistContext";
-import { playedAudio } from "@/app/api";
+import { getAudio } from "@/app/api";
 
 import CustomSlider from "../CustomSlider";
 import PlayButton from "./PlayerButtons/PlayButton";
@@ -28,23 +28,42 @@ const Player = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isThereAPlaylist, setIsThereAPlaylist] = useState(false);
-  const [artist, setArtist] = useState(null);
-  const [cover, setCover] = useState(null);
-  const { currentPlaylist, currentArtist, albumCover, playlistIndex } =
-    useContext(PlaylistContext);
+  const { currentPlaylist, playlistIndex } = useContext(PlaylistContext);
+
+  const audioIds = ["12", "68", "124", "1", "90", "103"];
+  const [audioData, setAudioData] = useState([]);
+
+  useEffect(() => {
+    const fetchDataForAllAudioIds = () => {
+      const newData = [];
+      for (const audioId of currentPlaylist) {
+        getAudio(audioId)
+          .then((data) => {
+            newData.push(data);
+            setAudioData(newData);
+          })
+          .catch((error) => {
+            console.error("Error fetching album:", error);
+          });
+      }
+    };
+    // Fonction pour effectuer les appels API pour chaque ID audio
+
+    // Appelez la fonction pour récupérer les données au montage du composant
+    fetchDataForAllAudioIds();
+  }, [currentPlaylist]);
 
   // Utilisez currentPlaylist dans votre logique
   useEffect(() => {
+    console.log("current : ", currentPlaylist);
     if (currentPlaylist.length > 0) {
-      setPlayList(currentPlaylist);
-      setArtist(currentArtist);
-      setCover(albumCover);
+      setPlayList(audioData);
       setIsThereAPlaylist(true);
       setIndexPlayList(playlistIndex);
       setIsPlaying(true);
     }
     // Autres logiques avec currentPlaylist
-  }, [albumCover, currentArtist, currentPlaylist, playlistIndex]);
+  }, [audioData, currentPlaylist, playlistIndex]);
 
   useEffect(() => {
     setInterval(() => {
@@ -100,14 +119,14 @@ const Player = () => {
           src={playList[indexPlayList] && playList[indexPlayList].file}
         />
       )}
-      {playList.length === 0 && !cover ? (
+      {playList.length === 0 && !playList[indexPlayList]?.album.cover ? (
         <p className="w-[30%]"></p>
       ) : (
         <HorizontalCard
-          label={playList[indexPlayList] && playList[indexPlayList].title}
-          GreyText={artist}
+          label={playList[indexPlayList]?.title}
+          GreyText={playList[indexPlayList]?.artist.name}
           width={"30%"}
-          coverSrc={cover}
+          coverSrc={playList[indexPlayList]?.album.cover}
         />
       )}
 

@@ -28,6 +28,20 @@ export const getAlbum = async (id) => {
   }
 };
 
+export const getAudio = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/audios/${id}/`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch artist");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching artist:", error);
+    throw new Error("Failed to fetch artist");
+  }
+};
+
 //Functions to get all
 
 export const getArtists = async () => {
