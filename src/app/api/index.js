@@ -101,3 +101,15 @@ export const playedAudio = async (id) => {
   const data = await response.json();
   return data;
 };
+
+export const search = async (input) => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ keyword: input }),
+  });
+  const data = await response.json();
+  return data;
+};
