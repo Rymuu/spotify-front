@@ -3,7 +3,7 @@
 import React from "react";
 import { useEffect, useRef, useState, useCallback, useContext } from "react";
 import { PlaylistContext } from "@/app/context/PlaylistContext";
-import { getAudio } from "@/app/api";
+import { getAudio, playedAudio } from "@/app/api";
 
 import CustomSlider from "./CustomSlider";
 import PlayButton from "./PlayerButtons/PlayButton";
@@ -29,8 +29,6 @@ const Player = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isThereAPlaylist, setIsThereAPlaylist] = useState(false);
   const { currentPlaylist, playlistIndex } = useContext(PlaylistContext);
-
-  const audioIds = ["12", "68", "124", "1", "90", "103"];
   const [audioData, setAudioData] = useState([]);
 
   useEffect(() => {
@@ -71,7 +69,7 @@ const Player = () => {
       setIsPlaying(true);
     }
     // Autres logiques avec currentPlaylistindexPlayList
-  }, [audioData, currentPlaylist, playlistIndex]);
+  }, [audioData, currentPlaylist, playList, playlistIndex]);
 
   useEffect(() => {
     setInterval(() => {
@@ -108,8 +106,21 @@ const Player = () => {
     [goNext]
   );
 
+  const handlePlay = useCallback((id) => {
+    playedAudio(id)
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching artist:", error);
+      });
+
+    console.log("new song playing");
+    // Ajoutez d'autres actions à effectuer lorsque la chanson démarre
+  }, []);
+
   return (
-    <div className="fixed flex justify-between bottom-0 text-center items-center w-screen p-5 bg-black">
+    <div className="fixed flex gap-x-5 justify-between bottom-0 text-center items-center w-screen p-5 bg-black">
       {isThereAPlaylist && (
         <audio
           onCanPlay={() => {
@@ -124,16 +135,17 @@ const Player = () => {
           src={playList[indexPlayList] && playList[indexPlayList].file}
         />
       )}
-      {playList.length === 0 && !playList[indexPlayList]?.album.cover ? (
-        <></>
-      ) : (
-        <HorizontalCard
-          label={playList[indexPlayList]?.title}
-          GreyText={playList[indexPlayList]?.artist.name}
-          coverSrc={playList[indexPlayList]?.album.cover}
-        />
-      )}
-
+      <div className="w-[30%]">
+        {playList.length === 0 && !playList[indexPlayList]?.album.cover ? (
+          <></>
+        ) : (
+          <HorizontalCard
+            label={playList[indexPlayList]?.title}
+            GreyText={playList[indexPlayList]?.artist.name}
+            coverSrc={playList[indexPlayList]?.album.cover}
+          />
+        )}
+      </div>
       <div className="w-[40%]">
         <div className="flex gap-x-4 justify-center">
           {/* Randomize Button */}
@@ -216,7 +228,7 @@ const Player = () => {
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-x-4">
+      <div className="flex items-center gap-x-4 w-[30%] justify-end">
         {/* Slider Audio */}
         <VolumeSlider audioRef={audioRef} />
         <AiOutlineExpandAlt

@@ -13,18 +13,18 @@ const responsive = {
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
     items: 5,
-    slidesToSlide: 3
+    slidesToSlide: 3,
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
     items: 2,
-    slidesToSlide: 2
+    slidesToSlide: 2,
   },
   mobile: {
     breakpoint: { max: 464, min: 0 },
     items: 1,
-    slidesToSlide: 1
-  }
+    slidesToSlide: 1,
+  },
 };
 export default function Home() {
   const [lastAlbums, setLastAlbums] = useState([]);
@@ -95,7 +95,7 @@ export default function Home() {
       <Section label={"New albums"}>
         <Carousel responsive={responsive}>
           {lastAlbums.map((item) => (
-            <Card 
+            <Card
               key={item.id}
               label={item.title}
               greyText={"Album"}
@@ -108,7 +108,7 @@ export default function Home() {
 
       <Section label={"New artists"}>
         <Carousel responsive={responsive}>
-        {lastArtists.map((item) => (
+          {lastArtists.map((item) => (
             <Card
               key={item.id}
               label={item.name}

@@ -1,8 +1,8 @@
 import React from "react";
 
-const Section = ({ children, label, textSize = "2xl" }) => {
+const Section = ({ children, label, textSize = "6xl" }) => {
   return (
-    <div>
+    <div className="py-5">
       <h1 className={`font-bold my-4 text-${textSize}`}>{label}</h1>
       {children}
     </div>

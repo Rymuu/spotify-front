@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getArtists } from "@/app/api";
 
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
@@ -14,18 +13,6 @@ import SidebarItem from "./SidebarItem";
 import HorizontalCard from "../Cards/HorizontalCard";
 
 const Sidebar = () => {
-  const [artists, setArtists] = useState([]);
-
-  useEffect(() => {
-    getArtists()
-      .then((data) => {
-        setArtists(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching artists:", error);
-      });
-  }, []);
-
   const pathname = usePathname();
 
   const routes = useMemo(
