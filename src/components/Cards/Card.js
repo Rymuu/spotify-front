@@ -17,7 +17,7 @@ const Card = ({ label, greyText, coverSrc, onClick }) => {
         />
       </div>
 
-      <p className="font-semibold mb-1 truncate">{label}</p>
+      <p className="font-semibold mb-1 truncate mt-2.5">{label}</p>
       <p className="text-neutral-400 font-medium text-sm truncate">
         {greyText}
       </p>
