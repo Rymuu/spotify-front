@@ -11,7 +11,6 @@ const RandomizeButton = ({ array }) => {
   const randomize = useCallback(
     (array) => {
       const randomizedArray = shuffle(array);
-      console.log(randomizedArray, "random");
       const audioIds = randomizedArray.map((audio) => audio.id);
       setCurrentPlaylist(audioIds);
       setPlaylistIndex(0);

@@ -96,7 +96,7 @@ export default function Search() {
         ) : (
           <Section label={"Songs"}>
             {audios.length > 0 &&
-              audios.map((item, index) => (
+              audios.map((item) => (
                 <HorizontalCard
                   key={item.id}
                   label={item.title}
@@ -105,7 +105,7 @@ export default function Search() {
                   hover={true}
                   width="full"
                   onClick={() => {
-                    setPlaylistIndex(index);
+                    setPlaylistIndex(0);
                     setCurrentPlaylist([item.id]);
                   }}
                 />

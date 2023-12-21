@@ -58,8 +58,6 @@ const Player = () => {
             }
           })
         );
-
-        // Filter out null values (failed requests) and set the audio data
         setAudioData(audioDataArray.filter((data) => data !== null));
       } catch (error) {
         console.error("Error fetching audio data for all IDs:", error);
@@ -70,9 +68,7 @@ const Player = () => {
     fetchDataForAllAudioIds();
   }, [currentPlaylist]);
 
-  useEffect(() => {
-    console.log("here", playList);
-  }, [playList]);
+  useEffect(() => {}, [playList]);
 
   // Utilisez currentPlaylist dans votre logique
   useEffect(() => {
@@ -139,6 +135,16 @@ const Player = () => {
       <div className="fixed flex gap-x-5 justify-between bottom-0 text-center items-center w-screen p-5 bg-black">
         {isThereAPlaylist && (
           <audio
+            onLoadedData={() => {
+              console.log("la musique a été load une seule fois");
+              playedAudio(playList[indexPlayList] && playList[indexPlayList].id)
+                .then((data) => {
+                  console.log(data);
+                })
+                .catch((error) => {
+                  console.error("Error fetching albums :", error);
+                });
+            }}
             onCanPlay={() => {
               if (isPlaying && !isDragging) {
                 audioRef.current.play();
@@ -149,6 +155,8 @@ const Player = () => {
             }
             ref={audioRef}
             src={playList[indexPlayList] && playList[indexPlayList].file}
+            // src={audioData.file}
+            onLoad={() => console.log("la musique a été load une seule fois")}
           />
         )}
         <div className="w-[30%]">
