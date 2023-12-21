@@ -92,7 +92,7 @@ export default function Home() {
           />
         </div>
       </Section>
-      <Section label={"New albums"}>
+      <Section label={"New albums"} textSize="3xl">
         <Carousel responsive={responsive}>
           {lastAlbums.map((item) => (
             <Card
@@ -106,7 +106,7 @@ export default function Home() {
         </Carousel>
       </Section>
 
-      <Section label={"New artists"}>
+      <Section label={"New artists"} textSize="3xl">
         <Carousel responsive={responsive}>
           {lastArtists.map((item) => (
             <Card
