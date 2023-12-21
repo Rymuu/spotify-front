@@ -48,19 +48,18 @@ export default function Artist() {
       )}
       <div className="bg-gradient-to-b from-neutral-900/40 to-neutral-900 w-full h-full p-5">
         <p className="text-lg font-bold text-white mb-1">Albums</p>
-        <div className="w-full">
-          <div className="mt-4 mb-8 grid grid-flow-col auto-cols-max gap-4">
-            {artist &&
-              artist.albums.map((item) => (
-                <Card
-                  key={item.id}
-                  label={item.title}
-                  greyText={"Album"}
-                  coverSrc={item.cover}
-                  onClick={() => router.push(`/album/${item.id}`)}
-                />
-              ))}
-          </div>
+        <div className="w-full mt-4 mb-8 grid grid-flow-col auto-cols-max gap-4">
+          {artist &&
+            artist.albums.map((item) => (
+              <Card
+                key={item.id}
+                label={item.title}
+                greyText={"Album"}
+                coverSrc={item.cover}
+                rounded={"md"}
+                onClick={() => router.push(`/album/${item.id}`)}
+              />
+            ))}
         </div>
       </div>
     </div>

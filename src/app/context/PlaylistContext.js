@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useState, useEffect } from "react";
-import { getAlbum, getArtist } from "@/app/api/index";
 
 export const PlaylistContext = createContext({});
 

@@ -1,8 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-console.log("env : ", process.env.NEXT_PUBLIC_API_URL);
-
 export const getArtist = async (id) => {
   try {
     const response = await fetch(

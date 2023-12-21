@@ -19,7 +19,6 @@ export default function Album() {
     // Appeler setAlbumId avec le nouvel ID d'album
     setCurrentPlaylist(audioIds);
     setPlaylistIndex(index);
-    console.log(index);
   };
 
   useEffect(() => {
@@ -33,7 +32,6 @@ export default function Album() {
 
           // Set the array of audio IDs in state
           setAudioIds(audioIds);
-          console.log("audiosIds : ", audioIds);
           // Fetch artist information
           getArtist(data.artistId)
             .then((data) => {

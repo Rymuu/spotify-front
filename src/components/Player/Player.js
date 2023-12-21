@@ -34,7 +34,6 @@ const Player = () => {
   useEffect(() => {
     const fetchDataForAllAudioIds = async () => {
       try {
-        // Use Promise.all to wait for all requests to complete
         const audioDataArray = await Promise.all(
           currentPlaylist.map(async (audioId) => {
             try {
@@ -58,14 +57,16 @@ const Player = () => {
     fetchDataForAllAudioIds();
   }, [currentPlaylist]);
 
+  useEffect(() => {
+    console.log("here", playList);
+  }, [playList]);
+
   // Utilisez currentPlaylist dans votre logique
   useEffect(() => {
-    console.log("current : ", currentPlaylist);
     if (currentPlaylist.length > 0) {
       setPlayList(audioData);
       setIsThereAPlaylist(true);
       setIndexPlayList(playlistIndex);
-      console.log("new playlist", playList);
       setIsPlaying(true);
     }
     // Autres logiques avec currentPlaylistindexPlayList
@@ -105,19 +106,6 @@ const Player = () => {
     },
     [goNext]
   );
-
-  const handlePlay = useCallback((id) => {
-    playedAudio(id)
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching artist:", error);
-      });
-
-    console.log("new song playing");
-    // Ajoutez d'autres actions à effectuer lorsque la chanson démarre
-  }, []);
 
   return (
     <div className="fixed flex gap-x-5 justify-between bottom-0 text-center items-center w-screen p-5 bg-black">

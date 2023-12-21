@@ -1,39 +1,25 @@
 import React from "react";
-import { FaPlay } from "react-icons/fa";
-import { IoMdPause } from "react-icons/io";
+import { FaPlay, FaPause } from "react-icons/fa";
 
-const PlayButton = ({
-  audioRef,
-  isPlaying,
-  setIsPlaying,
-  isThereAPlaylist,
-}) => {
+const PlayButton = ({ audioRef, isPlaying, setIsPlaying }) => {
   return (
-    <div>
-      {isPlaying && isThereAPlaylist ? (
-        <button
-          className="p-[7.5px] bg-white rounded-full"
-          onClick={() => {
-            audioRef.current.pause();
-            setIsPlaying(false);
-          }}
-        >
-          <IoMdPause size={20} className="text-black" />
-        </button>
+    <button
+      className="p-[10px] bg-white rounded-full"
+      onClick={() => {
+        if (isPlaying) {
+          audioRef.current.pause();
+        } else {
+          audioRef.current.play();
+        }
+        setIsPlaying(!isPlaying);
+      }}
+    >
+      {isPlaying ? (
+        <FaPause size={20} className="text-black" />
       ) : (
-        <button
-          className="p-[10px] bg-white rounded-full"
-          onClick={() => {
-            if (isThereAPlaylist) {
-              audioRef.current.play();
-              setIsPlaying(true);
-            }
-          }}
-        >
-          <FaPlay size={15} className="text-black " />
-        </button>
+        <FaPlay size={20} className="text-black" />
       )}
-    </div>
+    </button>
   );
 };
 
