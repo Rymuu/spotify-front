@@ -123,19 +123,19 @@ const Player = () => {
   return (
     <FullScreen handle={handle}>
       {isFullscreen && (
-          <>
-            <div className="fixed top-0 left-0 w-full h-full">
-              <div className="w-full h-full bg-gradient-to-b from-blue-500 to-purple-500"></div>
-            </div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-8">
-              <HorizontalCardLarge
-                label={playList[indexPlayList]?.title}
-                GreyText={playList[indexPlayList]?.artist.name}
-                coverSrc={playList[indexPlayList]?.album.cover}
-              />
-            </div>
-          </>
-        )}
+        <>
+          <div className="fixed top-0 left-0 w-full h-full">
+            <div className="w-full h-full bg-gradient-to-b from-blue-500 to-purple-500"></div>
+          </div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-8">
+            <HorizontalCardLarge
+              label={playList[indexPlayList]?.title}
+              GreyText={playList[indexPlayList]?.artist.name}
+              coverSrc={playList[indexPlayList]?.album.cover}
+            />
+          </div>
+        </>
+      )}
       <div className="fixed flex gap-x-5 justify-between bottom-0 text-center items-center w-screen p-5 bg-black">
         {isThereAPlaylist && (
           <audio
@@ -255,7 +255,6 @@ const Player = () => {
         </div>
       </div>
     </FullScreen>
-    
   );
 };
 
