@@ -5,70 +5,58 @@ import { PlaylistContext } from "@/app/context/PlaylistContext";
 import { useContext, useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { FaHashtag } from "react-icons/fa";
-import {
-  getLastListenedAudios,
-  getTopListenedAudios,
-  getLast10Audios,
-} from "@/app/api";
-import SongCard from "@/components/SongCard";
+import { getAlbum, getArtist } from "@/app/api";
+import SongCard from "@/components/Cards/SongCard";
 
-export default function Playlist() {
-  const { name } = useParams();
-  const [playlist, setPlaylist] = useState();
+export default function Album() {
+  const { id } = useParams();
+  const [album, setAlbum] = useState();
+  const [artist, setArtist] = useState();
   const { setCurrentPlaylist, setPlaylistIndex } = useContext(PlaylistContext);
   const [audioIds, setAudioIds] = useState();
-  const [title, setTitle] = useState();
 
   const handleAlbumSelect = (index) => {
+    // Appeler setAlbumId avec le nouvel ID d'album
     setCurrentPlaylist(audioIds);
     setPlaylistIndex(index);
+    console.log(index);
   };
 
   useEffect(() => {
-    if (name === "newSongs") {
-      getLast10Audios()
+    const fetchAlbum = (id) => {
+      getAlbum(id)
         .then((data) => {
-          setPlaylist(data);
-          const audioIds = data.map((audio) => audio.id);
+          setAlbum(data);
+
+          // Extract audio IDs from the array of audio objects
+          const audioIds = data.audios.map((audio) => audio.id);
+
+          // Set the array of audio IDs in state
           setAudioIds(audioIds);
+          console.log("audiosIds : ", audioIds);
+          // Fetch artist information
+          getArtist(data.artistId)
+            .then((data) => {
+              setArtist(data.name);
+            })
+            .catch((error) => {
+              console.error("Error fetching artist:", error);
+            });
         })
         .catch((error) => {
-          console.error("Error fetching playlist:", error);
+          console.error("Error fetching album:", error);
         });
-      setTitle("New Songs");
-    } else if (name === "lastListenedAudios") {
-      getLastListenedAudios()
-        .then((data) => {
-          setPlaylist(data);
-          const audioIds = data.map((audio) => audio.id);
-          setAudioIds(audioIds);
-        })
-        .catch((error) => {
-          console.error("Error fetching playlist:", error);
-        });
-      setTitle("Last listened to");
-    } else if (name === "topListenedAudios") {
-      getTopListenedAudios()
-        .then((data) => {
-          setPlaylist(data);
-          const audioIds = data.map((audio) => audio.id);
-          setAudioIds(audioIds);
-        })
-        .catch((error) => {
-          console.error("Error fetching playlist:", error);
-        });
-      setTitle("Most listened to");
-    } else {
-      console.error("Invalid name value:", name);
-    }
-  }, [name, playlist]);
+    };
+
+    fetchAlbum(id);
+  }, [id]);
 
   return (
     <div className="bg-gradient-to-b from-indigo-500 via-20% to-neutral-900 h-screen">
-      {playlist && (
+      {album && (
         <div className="flex items-end gap-x-5 m-5">
           <Image
-            src="https://d3ozihag9834pq.cloudfront.net/image/music.png"
+            src={album.cover}
             alt="Album cover"
             width={"150"}
             height={"150"}
@@ -76,7 +64,12 @@ export default function Playlist() {
           />
 
           <div>
-            <h1 className="font-bold text-3xl mb-3">{title}</h1>
+            <p className="text-sm font-medium mb-1">Album</p>
+            <h1 className="font-bold text-3xl mb-3">{album.title}</h1>
+            <p className="text-sm font-semibold">
+              <a href={`/artist/${album.artistId}`}>{artist}</a> · {album.type}{" "}
+              · {album.audios.length} tracks
+            </p>
           </div>
         </div>
       )}
@@ -93,13 +86,12 @@ export default function Playlist() {
           </div>
 
           <div className="mt-4 mb-8">
-            {playlist &&
-              playlist.map((item, index) => (
+            {album &&
+              album.audios.map((item, index) => (
                 <SongCard
-                  coverSrc={item.album?.cover}
                   key={item.id}
                   song={item}
-                  artist={item.artist?.name}
+                  artist={artist}
                   index={index + 1}
                   onDoubleClick={() => handleAlbumSelect(index)}
                 />

@@ -11,7 +11,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import { BiSolidPlaylist } from "react-icons/bi";
 
 import SidebarItem from "./SidebarItem";
-import HorizontalCard from "./HorizontalCard";
+import HorizontalCard from "../Cards/HorizontalCard";
 
 const Sidebar = () => {
   const [artists, setArtists] = useState([]);

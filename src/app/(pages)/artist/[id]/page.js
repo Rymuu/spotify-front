@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { getArtist } from "@/app/api";
-import Card from "@/components/Card";
+import Card from "@/components/Cards/Card";
 
 export default function Artist() {
   const { id } = useParams();
