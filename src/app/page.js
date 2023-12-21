@@ -6,7 +6,26 @@ import Section from "@/components/Section";
 
 import { getLast10Artists, getLast10Albums } from "./api";
 import { useEffect, useState } from "react";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 
+const responsive = {
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 5,
+    slidesToSlide: 3
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 2,
+    slidesToSlide: 2
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+    slidesToSlide: 1
+  }
+};
 export default function Home() {
   const [lastAlbums, setLastAlbums] = useState([]);
   const [lastArtists, setLastArtists] = useState([]);
@@ -74,26 +93,31 @@ export default function Home() {
         </div>
       </Section>
       <Section label={"New albums"}>
-        {lastAlbums.map((item) => (
-          <Card
-            key={item.id}
-            label={item.title}
-            greyText={"Album"}
-            coverSrc={item.cover}
-            onClick={() => router.push(`/album/${item.id}`)}
-          />
-        ))}
+        <Carousel responsive={responsive}>
+          {lastAlbums.map((item) => (
+            <Card 
+              key={item.id}
+              label={item.title}
+              greyText={"Album"}
+              coverSrc={item.cover}
+              onClick={() => router.push(`/album/${item.id}`)}
+            />
+          ))}
+        </Carousel>
       </Section>
+
       <Section label={"New artists"}>
+        <Carousel responsive={responsive}>
         {lastArtists.map((item) => (
-          <Card
-            key={item.id}
-            label={item.name}
-            greyText={"Artist"}
-            coverSrc={item.albums[0].cover}
-            onClick={() => router.push(`/artist/${item.id}`)}
-          />
-        ))}
+            <Card
+              key={item.id}
+              label={item.name}
+              greyText={"Artist"}
+              coverSrc={item.albums[0].cover}
+              onClick={() => router.push(`/artist/${item.id}`)}
+            />
+          ))}
+        </Carousel>
       </Section>
     </div>
   );
