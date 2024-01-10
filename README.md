@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Spotify-front
 
-## Getting Started
+Équipe :
 
-First, run the development server:
+- DANG Ngoc Ha Lan
+- EGRO Kejsi
+- LEHNA Ryme
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Liens GITHUB pour le rendu :
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- BackOffice : https://github.com/HaLan0101/Spotify-back-office
+- Front : https://github.com/Rymuu/spotify-front
+- Back : https://github.com/HaLan0101/Spotify-back-api
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Lien de vos projets mis en prod :
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- BackOffice : http://35.181.59.217
+- Front :
+- Back : http://35.181.59.217/api/artists
 
-## Learn More
+SOUHAITEZ-VOUS UNE ANALYSE ET DES RETOURS CONCRETS SUR VOTRE CODE ?
 
-To learn more about Next.js, take a look at the following resources:
+- Oui
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Description :
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Nextjs
+- Eslint / prettier
+- Lecteur mp3 fonctionnel
+- Page artiste et album et navigation entre chaque page
+- Recherche
+- Design similaire à Spotify
+- Fullscreen de la musique jouée
+- Playlists top écoutes, dernières écoutes..
+- Affichage des derniers sons, artistes sur la homepage
